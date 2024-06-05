@@ -1,0 +1,60 @@
+{% macro user_form(roles, action='create', user=None, errors=None) %}
+<form method="post">
+    {% if action=='create' %}
+    <div class="mb-3">
+        <label class="form-label" for="login">Логин</label>
+        <input class="form-control {% if errors['login'] %}is-invalid{% endif %}" type="text" id="login" name="login" value="{{ user.login or '' }}"
+            aria-describedby="valFeedback1">
+        <div class="invalid-feedback" id="valFeedback1">
+            {{ errors['login'] | ternary('Недопустимое значение.', 'Поле принимает только буквы и цифры.') }}
+        </div>
+    </div>
+    {% endif %}
+    {% if action=='edit_pass' %}
+    <div class="mb-3">
+        <label class="form-label" for="oldpassword">Старый пароль</label>
+        <input class="form-control {% if errors['oldpassword'] %}is-invalid{% endif %}" type="password" id="oldpassword" name="oldpassword" aria-describedby="valFeedback21">
+        <div class="invalid-feedback" id="valFeedback21">
+            {{ errors['oldpassword'] | ternary('Неверный пароль!', 'Введите старый пароль.') }}
+        </div>
+    </div>
+    {% endif %}
+    {% if action=='create' or action=='edit_pass' %}
+    <div class="mb-3">
+        <label class="form-label" for="password">Пароль</label>
+        <input class="form-control {% if errors['password'] %}is-invalid{% endif %}" type="password" id="password" name="password" aria-describedby="valFeedback2">
+        <div class="invalid-feedback" id="valFeedback2">
+            {{ errors['password'] | ternary('Недопустимое значение.', 'Длина пароля минимум 8, максимум 128 символов.') }}
+        </div>
+    </div>
+    {% endif %}
+    {% if action=='edit_pass' %}
+    <div class="mb-3">
+        <label class="form-label" for="spassword">Повторите пароль</label>
+        <input class="form-control {% if errors['spassword'] %}is-invalid{% endif %}" type="password" id="spassword" name="spassword" aria-describedby="valFeedback20">
+        <div class="invalid-feedback" id="valFeedback20">
+            {{ errors['spassword'] | ternary('Недопустимое значение.', 'Длина пароля минимум 8, максимум 128 символов.') }}
+        </div>
+    </div>
+    {% endif %}
+    {% if action!='edit_pass' %}
+    <div class="mb-3">
+        <label class="form-label" for="last_name">Фамилия</label>
+        <input class="form-control {% if errors['last_name'] %}is-invalid{% endif %}" type="text" id="last_name" name="last_name" value="{{ user.last_name or '' }}"
+            aria-describedby="valFeedback3">
+        <div class="invalid-feedback" id="valFeedback3">
+            {{ errors['last_name'] | ternary('Недопустимая фамилия.', 'Недопустимое значение. Фамилия должна состоять только из букв.') }}
+        </div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="first_name">Имя</label>
+        <input class="form-control {% if errors['first_name'] %}is-invalid{% endif %}" type="text" id="first_name" name="first_name" value="{{ user.first_name or '' }}"
+            aria-describedby="valFeedback4">
+        <div class="invalid-feedback" id="valFeedback4">
+            {{ errors['first_name'] | ternary('Недопустимое имя.', 'Недопустимое значение. Имя должно состоять только из букв.') }}
+        </div>
+    </div>
+    {% endif %}
+    <button class="btn btn-success">Сохранить</button>
+</form>
+{% endmacro %}

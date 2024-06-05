@@ -76,21 +76,28 @@ def get_form_data(required_fields):
 
 
 def validate_form(user, fields):
-    regex = {'login': r'^[\da-zA-Z]{5,}$',
-             'password': r'^(?=.*\d)(?=.*[A-ZА-Я])(?=.*[a-zа-я])(?=.*[\~\!\?\@\#\$\%\^'\
-             r'\&\*\_\-\+\(\)\[\]\{\}\>\<\/\\\|\"\'\.\,\:\;]*)([^\s]){8,128}$',
-             'spassword': r'^(?=.*\d)(?=.*[A-ZА-Я])(?=.*[a-zа-я])(?=.*[\~\!\?\@\#\$\%\^'\
-             r'\&\*\_\-\+\(\)\[\]\{\}\>\<\/\\\|\"\'\.\,\:\;]*)([^\s]){8,128}$',
-             'last_name': r'^[a-zA-Zа-яА-Я]+$',
-             'first_name': r'^[a-zA-Zа-яА-Я]+$'}
+    regex = {
+        'login': r'^[\da-zA-Z]{5,}$',
+        'password': r'^(?=.*\d)(?=.*[A-ZА-Я])(?=.*[a-zа-я])(?=.*[\~\!\?\@\#\$\%\^'\
+                     r'\&\*\_\-\+\(\)\[\]\{\}\>\<\/\\\|\"\'\.\,\:\;]*)([^\s]){8,128}$',
+        'spassword': r'^(?=.*\d)(?=.*[A-ZА-Я])(?=.*[a-zа-я])(?=.*[\~\!\?\@\#\$\%\^'\
+                     r'\&\*\_\-\+\(\)\[\]\{\}\>\<\/\\\|\"\'\.\,\:\;]*)([^\s]){8,128}$',
+        'last_name': r'^[a-zA-Zа-яА-Я]+$',
+        'first_name': r'^[a-zA-Zа-яА-Я]+$'
+    }
     errors = {}
     is_error = False
     for field in fields:
-        errors[field] = True
         if user.get(field):
-            errors[field] = re.search(regex[field], user[field]) == None
-            is_error = is_error or errors[field]
+            match = re.search(regex[field], user[field])
+            if not match:
+                if field == 'password' or field == 'spassword':
+                    errors[field] = "Длина пароля от 8 до 128 символов"
+                else:
+                    errors[field] = "Недопустимые символы"
+                is_error = True
     return errors, is_error
+
 
 @app.route('/<int:user_id>/info')
 def user_info(user_id):
